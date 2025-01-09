@@ -1,0 +1,934 @@
+[
+    {
+        "label": "bpy",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "bpy",
+        "description": "bpy",
+        "detail": "bpy",
+        "documentation": {}
+    },
+    {
+        "label": "mathutils",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "mathutils",
+        "description": "mathutils",
+        "detail": "mathutils",
+        "documentation": {}
+    },
+    {
+        "label": "Vector",
+        "importPath": "mathutils",
+        "description": "mathutils",
+        "isExtraImport": true,
+        "detail": "mathutils",
+        "documentation": {}
+    },
+    {
+        "label": "numpy",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "numpy",
+        "description": "numpy",
+        "detail": "numpy",
+        "documentation": {}
+    },
+    {
+        "label": "os",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "os",
+        "description": "os",
+        "detail": "os",
+        "documentation": {}
+    },
+    {
+        "label": "toml",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "toml",
+        "description": "toml",
+        "detail": "toml",
+        "documentation": {}
+    },
+    {
+        "label": "sys",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "sys",
+        "description": "sys",
+        "detail": "sys",
+        "documentation": {}
+    },
+    {
+        "label": "bmesh",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "bmesh",
+        "description": "bmesh",
+        "detail": "bmesh",
+        "documentation": {}
+    },
+    {
+        "label": "createMaterial",
+        "importPath": "Pose2Sim_Blender.Pose2Sim_Blender.common",
+        "description": "Pose2Sim_Blender.Pose2Sim_Blender.common",
+        "isExtraImport": true,
+        "detail": "Pose2Sim_Blender.Pose2Sim_Blender.common",
+        "documentation": {}
+    },
+    {
+        "label": "createMaterial",
+        "importPath": "Pose2Sim_Blender.Pose2Sim_Blender.common",
+        "description": "Pose2Sim_Blender.Pose2Sim_Blender.common",
+        "isExtraImport": true,
+        "detail": "Pose2Sim_Blender.Pose2Sim_Blender.common",
+        "documentation": {}
+    },
+    {
+        "label": "minidom",
+        "importPath": "xml.dom",
+        "description": "xml.dom",
+        "isExtraImport": true,
+        "detail": "xml.dom",
+        "documentation": {}
+    },
+    {
+        "label": "ModalOperator",
+        "kind": 6,
+        "importPath": "Pose2Sim_Blender.cameras",
+        "description": "Pose2Sim_Blender.cameras",
+        "peekOfCode": "class ModalOperator(bpy.types.Operator):\n    bl_idname = \"object.detect_orbit\"\n    bl_label = \"Detect Orbit (Middle mouse click)\"\n    def __init__(self):\n        print(\"Waiting for orbiting motion\")\n    def __del__(self):\n        print(\"Orbiting motion done\")\n    def execute(self, context):\n        return {'FINISHED'}\n    def modal(self, context, event):",
+        "detail": "Pose2Sim_Blender.cameras",
+        "documentation": {}
+    },
+    {
+        "label": "has_keyframe",
+        "kind": 2,
+        "importPath": "Pose2Sim_Blender.cameras",
+        "description": "Pose2Sim_Blender.cameras",
+        "peekOfCode": "def has_keyframe(ob, attr):\n    '''\n    Check if an object is animated or not\n    https://blender.stackexchange.com/questions/4994/check-if-a-property-is-animated-or-has-a-driver\n    '''\n    anim = ob.animation_data\n    if anim is not None and anim.action is not None:\n        for fcu in anim.action.fcurves:\n            if fcu.data_path == attr:\n                return len(fcu.keyframe_points) > 0",
+        "detail": "Pose2Sim_Blender.cameras",
+        "documentation": {}
+    },
+    {
+        "label": "rod_to_mat",
+        "kind": 2,
+        "importPath": "Pose2Sim_Blender.cameras",
+        "description": "Pose2Sim_Blender.cameras",
+        "peekOfCode": "def rod_to_mat(rodrigues_vec):\n    '''\n    Transform Rodrigues vector to rotation matrix without cv2\n    https://stackoverflow.com/questions/62345076/how-to-convert-a-rodrigues-vector-to-a-rotation-matrix-without-opencv-using-pyth\n    '''\n    rodrigues_vec = rodrigues_vec.flatten()\n    theta = np.linalg.norm(rodrigues_vec)\n    if theta < sys.float_info.epsilon:\n        rotation_mat = np.eye(3, dtype=float)\n    else:",
+        "detail": "Pose2Sim_Blender.cameras",
+        "documentation": {}
+    },
+    {
+        "label": "mat_to_rod",
+        "kind": 2,
+        "importPath": "Pose2Sim_Blender.cameras",
+        "description": "Pose2Sim_Blender.cameras",
+        "peekOfCode": "def mat_to_rod(rotation_mat):\n    '''\n    Transform rotation matrix to Rodrigues vector without cv2\n    https://docs.opencv.org/4.2.0/d9/d0c/group__calib3d.html#ga61585db663d9da06b68e70cfbf6a1eac\n    '''\n    tr = np.trace(rotation_mat) # tr=1+2cos(theta)\n    if tr == 3.0: # no rotation\n        return np.array([0.,0.,0.])\n    theta = np.arccos((tr-1)/2)\n    r_cross_sin = (rotation_mat - rotation_mat.T) /2",
+        "detail": "Pose2Sim_Blender.cameras",
+        "documentation": {}
+    },
+    {
+        "label": "world_to_camera_persp",
+        "kind": 2,
+        "importPath": "Pose2Sim_Blender.cameras",
+        "description": "Pose2Sim_Blender.cameras",
+        "peekOfCode": "def world_to_camera_persp(r, t):\n    '''\n    Converts rotation R and translation T \n    from Qualisys world centered perspective\n    to OpenCV camera centered perspective\n    and inversely.\n    Qc = RQ+T --> Q = R-1.Qc - R-1.T\n    '''\n    r = r.T\n    t = - r @ t",
+        "detail": "Pose2Sim_Blender.cameras",
+        "documentation": {}
+    },
+    {
+        "label": "set_loc_rotation",
+        "kind": 2,
+        "importPath": "Pose2Sim_Blender.cameras",
+        "description": "Pose2Sim_Blender.cameras",
+        "peekOfCode": "def set_loc_rotation(obj, value):\n    '''\n    Rotate object around local axis\n    See https://blender.stackexchange.com/a/255375/174689\n    '''\n    rot = mathutils.Euler(value, 'ZYX')\n    obj.rotation_euler = (obj.rotation_euler.to_matrix() @ rot.to_matrix()).to_euler(obj.rotation_mode)\ndef f_from_fov(fov):\n    '''\n    Retrieve focal length from fov and from render_settings, with:",
+        "detail": "Pose2Sim_Blender.cameras",
+        "documentation": {}
+    },
+    {
+        "label": "f_from_fov",
+        "kind": 2,
+        "importPath": "Pose2Sim_Blender.cameras",
+        "description": "Pose2Sim_Blender.cameras",
+        "peekOfCode": "def f_from_fov(fov):\n    '''\n    Retrieve focal length from fov and from render_settings, with:\n    fov = camera.data.angle\n    '''\n    render_settings = bpy.context.scene.render\n    w = render_settings.resolution_x\n    h = render_settings.resolution_y\n    f_1 = w / ( 2 * np.tan(fov/2) )\n    f_2 = h / ( 2 * np.tan(fov/2) )",
+        "detail": "Pose2Sim_Blender.cameras",
+        "documentation": {}
+    },
+    {
+        "label": "set_mesh_origin",
+        "kind": 2,
+        "importPath": "Pose2Sim_Blender.cameras",
+        "description": "Pose2Sim_Blender.cameras",
+        "peekOfCode": "def set_mesh_origin(ob, pos):\n    '''Given a mesh object set it's origin to a given position.\n    See there: https://blenderartists.org/t/modifying-object-origin-with-python/507305/7\n    '''\n    pos = mathutils.Vector(pos)\n    mat = mathutils.Matrix.Translation(pos - ob.location)\n    ob.location = pos\n    ob.data.transform(mat.inverted())\ndef add_bezier(v0 , v1, color=COLOR, ray_width=RAY_WIDTH):\n    '''",
+        "detail": "Pose2Sim_Blender.cameras",
+        "documentation": {}
+    },
+    {
+        "label": "add_bezier",
+        "kind": 2,
+        "importPath": "Pose2Sim_Blender.cameras",
+        "description": "Pose2Sim_Blender.cameras",
+        "peekOfCode": "def add_bezier(v0 , v1, color=COLOR, ray_width=RAY_WIDTH):\n    '''\n    Add line connecting two points, \n    with a certain width and color.\n    See there: https://blender.stackexchange.com/a/110211/174689\n    '''\n    if not 'RAY_WIDTH' in globals():\n        ray_width = 5/1000\n    if not 'COLOR' in globals():\n        color = (0.8, 0.4, 0.1, 0.8)",
+        "detail": "Pose2Sim_Blender.cameras",
+        "documentation": {}
+    },
+    {
+        "label": "hide",
+        "kind": 2,
+        "importPath": "Pose2Sim_Blender.cameras",
+        "description": "Pose2Sim_Blender.cameras",
+        "peekOfCode": "def hide(objects, state):\n    '''\n    Hide objects if state = True\n    Unhide them if state = False\n    '''\n    for obj in objects:\n        obj.hide_set(state)\ndef retrieveCal_fromFile(toml_path):\n    '''\n    Retrieve calibration parameters from toml file.",
+        "detail": "Pose2Sim_Blender.cameras",
+        "documentation": {}
+    },
+    {
+        "label": "retrieveCal_fromFile",
+        "kind": 2,
+        "importPath": "Pose2Sim_Blender.cameras",
+        "description": "Pose2Sim_Blender.cameras",
+        "peekOfCode": "def retrieveCal_fromFile(toml_path):\n    '''\n    Retrieve calibration parameters from toml file.\n    Output a dialog window to choose calibration file.\n    '''\n    N, S, D, K, R, T, P, moving = {}, {}, {}, {}, {}, {}, {}, {}\n    Kh, H = {}, {}\n    cal = toml.load(toml_path)\n    cal_keys = [c for c in cal.keys() if c not in ['metadata', 'capture_volume', 'charuco', 'checkerboard'] and isinstance(cal[c],dict)]\n    for cam in cal_keys:",
+        "detail": "Pose2Sim_Blender.cameras",
+        "documentation": {}
+    },
+    {
+        "label": "retrieveCal_fromScene",
+        "kind": 2,
+        "importPath": "Pose2Sim_Blender.cameras",
+        "description": "Pose2Sim_Blender.cameras",
+        "peekOfCode": "def retrieveCal_fromScene(cameras):\n    '''\n    Retrieve calibration parameters from cameras in the scene.\n    '''\n    # image dimensions (only accurate if all cameras have the same resolution?)\n    render_settings = bpy.context.scene.render\n    w = render_settings.resolution_x\n    h = render_settings.resolution_y\n    S = [[w, h]] * len(cameras)\n    # distortions are neglected at the moment",
+        "detail": "Pose2Sim_Blender.cameras",
+        "documentation": {}
+    },
+    {
+        "label": "write_calibration",
+        "kind": 2,
+        "importPath": "Pose2Sim_Blender.cameras",
+        "description": "Pose2Sim_Blender.cameras",
+        "peekOfCode": "def write_calibration(calib_params, toml_path):\n    '''\n    Write calibration file from calibration parameters\n    '''\n    S, D, N, K, R, T, P = calib_params\n    with open(toml_path, 'w+') as cal_f:\n        for c in range(len(S)):\n            cam_str = f'[{N[c]}]\\n'\n            name_str = f'name = \"{N[c]}\"\\n'\n            size_str = f'size = {S[c]} \\n'",
+        "detail": "Pose2Sim_Blender.cameras",
+        "documentation": {}
+    },
+    {
+        "label": "setup_cams",
+        "kind": 2,
+        "importPath": "Pose2Sim_Blender.cameras",
+        "description": "Pose2Sim_Blender.cameras",
+        "peekOfCode": "def setup_cams(calib_params, collection=''):\n    '''\n    Import cameras from their parameters:\n    name, field of view, rotation and translation, proncipal point, render settings\n    '''\n    if collection=='':\n        collection = bpy.data.collections.new('importedCameras')\n        bpy.context.scene.collection.children.link(collection)\n    if isinstance(collection,str):\n        collection = bpy.data.collections.new(collection)",
+        "detail": "Pose2Sim_Blender.cameras",
+        "documentation": {}
+    },
+    {
+        "label": "import_cameras",
+        "kind": 2,
+        "importPath": "Pose2Sim_Blender.cameras",
+        "description": "Pose2Sim_Blender.cameras",
+        "peekOfCode": "def import_cameras(toml_path):\n    '''\n    Import cameras from a .toml calibration file\n    '''\n    if os.path.isfile(toml_path):\n        outfile = os.path.splitext(toml_path)[0]+\".toml\"\n        calib_params = retrieveCal_fromFile(toml_path)\n        setup_cams(calib_params)\n        scene = bpy.context.scene\n        scene.unit_settings.system = 'METRIC'",
+        "detail": "Pose2Sim_Blender.cameras",
+        "documentation": {}
+    },
+    {
+        "label": "export_cameras",
+        "kind": 2,
+        "importPath": "Pose2Sim_Blender.cameras",
+        "description": "Pose2Sim_Blender.cameras",
+        "peekOfCode": "def export_cameras(toml_path):\n    '''\n    Export cameras as a .toml calibration file\n    N.B.: Distortions are neglected at the moment\n    N.B. 2: Only accurate if all cameras have the same resolution\n    '''\n    cameras = [ob for ob in list(bpy.context.scene.objects) if ob.type == 'CAMERA']\n    calib_params = retrieveCal_fromScene(cameras)\n    write_calibration(calib_params, toml_path)\n    print(f'Cameras exported to {toml_path} calibration file.')",
+        "detail": "Pose2Sim_Blender.cameras",
+        "documentation": {}
+    },
+    {
+        "label": "show_images",
+        "kind": 2,
+        "importPath": "Pose2Sim_Blender.cameras",
+        "description": "Pose2Sim_Blender.cameras",
+        "peekOfCode": "def show_images(camera, img_vid_path, single_image=False):\n    '''\n    Show images or a video associated to a selected camera\n    '''\n    # Global to local Gizmo\n    bpy.data.scenes['Scene'].transform_orientation_slots[1].type = 'LOCAL'\n    # load images or video\n    bpy.ops.object.load_reference_image(filepath=img_vid_path)\n    img = bpy.context.active_object\n    img.matrix_world = np.eye(4)",
+        "detail": "Pose2Sim_Blender.cameras",
+        "documentation": {}
+    },
+    {
+        "label": "film_from_cams",
+        "kind": 2,
+        "importPath": "Pose2Sim_Blender.cameras",
+        "description": "Pose2Sim_Blender.cameras",
+        "peekOfCode": "def film_from_cams( dir_path, \n                    cams,\n                    all_cameras=False, \n                    movie_or_sequence='images', \n                    target_framerate=30, \n                    first_frame = 0, \n                    last_frame = 100, \n                    render_quality=100):\n    '''\n    Film from selected cameras",
+        "detail": "Pose2Sim_Blender.cameras",
+        "documentation": {}
+    },
+    {
+        "label": "see_through_selected_camera",
+        "kind": 2,
+        "importPath": "Pose2Sim_Blender.cameras",
+        "description": "Pose2Sim_Blender.cameras",
+        "peekOfCode": "def see_through_selected_camera():\n    '''\n    See through the selected camera\n    '''\n    global objects, image\n    # Look through camera\n    bpy.context.scene.camera = bpy.context.active_object\n    area = next(area for area in bpy.context.screen.areas if area.type == 'VIEW_3D')\n    area.spaces[0].region_3d.view_perspective = 'CAMERA'\n    # change image depth",
+        "detail": "Pose2Sim_Blender.cameras",
+        "documentation": {}
+    },
+    {
+        "label": "reproject_3D_points",
+        "kind": 2,
+        "importPath": "Pose2Sim_Blender.cameras",
+        "description": "Pose2Sim_Blender.cameras",
+        "peekOfCode": "def reproject_3D_points(collection=''):\n    '''\n    Trace rays from an object to the camera\n    '''\n    objects = bpy.context.selected_objects\n    cameras = [ob for ob in list(bpy.context.scene.objects) if ob.type == 'CAMERA']\n    for ob in objects:\n        bpy.ops.object.select_all(action='DESELECT')\n        collection = bpy.data.collections.new(f'rays{ob.name}')\n        bpy.context.scene.collection.children.link(collection)",
+        "detail": "Pose2Sim_Blender.cameras",
+        "documentation": {}
+    },
+    {
+        "label": "RAY_WIDTH",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.cameras",
+        "description": "Pose2Sim_Blender.cameras",
+        "peekOfCode": "RAY_WIDTH = 0/1000\nCOLOR = (0.8, 0.4, 0.1, 0.8)\nIMAGE_QUALITY = 90\n## AUTHORSHIP INFORMATION\n__author__ = \"David Pagnon\"\n__copyright__ = \"Copyright 2023, Pose2Sim_Blender\"\n__credits__ = [\"David Pagnon\"]\n__license__ = \"MIT License\"\n__version__ = \"0.7.0\"\n__maintainer__ = \"David Pagnon\"",
+        "detail": "Pose2Sim_Blender.cameras",
+        "documentation": {}
+    },
+    {
+        "label": "COLOR",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.cameras",
+        "description": "Pose2Sim_Blender.cameras",
+        "peekOfCode": "COLOR = (0.8, 0.4, 0.1, 0.8)\nIMAGE_QUALITY = 90\n## AUTHORSHIP INFORMATION\n__author__ = \"David Pagnon\"\n__copyright__ = \"Copyright 2023, Pose2Sim_Blender\"\n__credits__ = [\"David Pagnon\"]\n__license__ = \"MIT License\"\n__version__ = \"0.7.0\"\n__maintainer__ = \"David Pagnon\"\n__email__ = \"contact@david-pagnon.com\"",
+        "detail": "Pose2Sim_Blender.cameras",
+        "documentation": {}
+    },
+    {
+        "label": "IMAGE_QUALITY",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.cameras",
+        "description": "Pose2Sim_Blender.cameras",
+        "peekOfCode": "IMAGE_QUALITY = 90\n## AUTHORSHIP INFORMATION\n__author__ = \"David Pagnon\"\n__copyright__ = \"Copyright 2023, Pose2Sim_Blender\"\n__credits__ = [\"David Pagnon\"]\n__license__ = \"MIT License\"\n__version__ = \"0.7.0\"\n__maintainer__ = \"David Pagnon\"\n__email__ = \"contact@david-pagnon.com\"\n__status__ = \"Development\"",
+        "detail": "Pose2Sim_Blender.cameras",
+        "documentation": {}
+    },
+    {
+        "label": "__author__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.cameras",
+        "description": "Pose2Sim_Blender.cameras",
+        "peekOfCode": "__author__ = \"David Pagnon\"\n__copyright__ = \"Copyright 2023, Pose2Sim_Blender\"\n__credits__ = [\"David Pagnon\"]\n__license__ = \"MIT License\"\n__version__ = \"0.7.0\"\n__maintainer__ = \"David Pagnon\"\n__email__ = \"contact@david-pagnon.com\"\n__status__ = \"Development\"\n## CLASSES\nclass ModalOperator(bpy.types.Operator):",
+        "detail": "Pose2Sim_Blender.cameras",
+        "documentation": {}
+    },
+    {
+        "label": "__copyright__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.cameras",
+        "description": "Pose2Sim_Blender.cameras",
+        "peekOfCode": "__copyright__ = \"Copyright 2023, Pose2Sim_Blender\"\n__credits__ = [\"David Pagnon\"]\n__license__ = \"MIT License\"\n__version__ = \"0.7.0\"\n__maintainer__ = \"David Pagnon\"\n__email__ = \"contact@david-pagnon.com\"\n__status__ = \"Development\"\n## CLASSES\nclass ModalOperator(bpy.types.Operator):\n    bl_idname = \"object.detect_orbit\"",
+        "detail": "Pose2Sim_Blender.cameras",
+        "documentation": {}
+    },
+    {
+        "label": "__credits__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.cameras",
+        "description": "Pose2Sim_Blender.cameras",
+        "peekOfCode": "__credits__ = [\"David Pagnon\"]\n__license__ = \"MIT License\"\n__version__ = \"0.7.0\"\n__maintainer__ = \"David Pagnon\"\n__email__ = \"contact@david-pagnon.com\"\n__status__ = \"Development\"\n## CLASSES\nclass ModalOperator(bpy.types.Operator):\n    bl_idname = \"object.detect_orbit\"\n    bl_label = \"Detect Orbit (Middle mouse click)\"",
+        "detail": "Pose2Sim_Blender.cameras",
+        "documentation": {}
+    },
+    {
+        "label": "__license__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.cameras",
+        "description": "Pose2Sim_Blender.cameras",
+        "peekOfCode": "__license__ = \"MIT License\"\n__version__ = \"0.7.0\"\n__maintainer__ = \"David Pagnon\"\n__email__ = \"contact@david-pagnon.com\"\n__status__ = \"Development\"\n## CLASSES\nclass ModalOperator(bpy.types.Operator):\n    bl_idname = \"object.detect_orbit\"\n    bl_label = \"Detect Orbit (Middle mouse click)\"\n    def __init__(self):",
+        "detail": "Pose2Sim_Blender.cameras",
+        "documentation": {}
+    },
+    {
+        "label": "__version__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.cameras",
+        "description": "Pose2Sim_Blender.cameras",
+        "peekOfCode": "__version__ = \"0.7.0\"\n__maintainer__ = \"David Pagnon\"\n__email__ = \"contact@david-pagnon.com\"\n__status__ = \"Development\"\n## CLASSES\nclass ModalOperator(bpy.types.Operator):\n    bl_idname = \"object.detect_orbit\"\n    bl_label = \"Detect Orbit (Middle mouse click)\"\n    def __init__(self):\n        print(\"Waiting for orbiting motion\")",
+        "detail": "Pose2Sim_Blender.cameras",
+        "documentation": {}
+    },
+    {
+        "label": "__maintainer__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.cameras",
+        "description": "Pose2Sim_Blender.cameras",
+        "peekOfCode": "__maintainer__ = \"David Pagnon\"\n__email__ = \"contact@david-pagnon.com\"\n__status__ = \"Development\"\n## CLASSES\nclass ModalOperator(bpy.types.Operator):\n    bl_idname = \"object.detect_orbit\"\n    bl_label = \"Detect Orbit (Middle mouse click)\"\n    def __init__(self):\n        print(\"Waiting for orbiting motion\")\n    def __del__(self):",
+        "detail": "Pose2Sim_Blender.cameras",
+        "documentation": {}
+    },
+    {
+        "label": "__email__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.cameras",
+        "description": "Pose2Sim_Blender.cameras",
+        "peekOfCode": "__email__ = \"contact@david-pagnon.com\"\n__status__ = \"Development\"\n## CLASSES\nclass ModalOperator(bpy.types.Operator):\n    bl_idname = \"object.detect_orbit\"\n    bl_label = \"Detect Orbit (Middle mouse click)\"\n    def __init__(self):\n        print(\"Waiting for orbiting motion\")\n    def __del__(self):\n        print(\"Orbiting motion done\")",
+        "detail": "Pose2Sim_Blender.cameras",
+        "documentation": {}
+    },
+    {
+        "label": "__status__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.cameras",
+        "description": "Pose2Sim_Blender.cameras",
+        "peekOfCode": "__status__ = \"Development\"\n## CLASSES\nclass ModalOperator(bpy.types.Operator):\n    bl_idname = \"object.detect_orbit\"\n    bl_label = \"Detect Orbit (Middle mouse click)\"\n    def __init__(self):\n        print(\"Waiting for orbiting motion\")\n    def __del__(self):\n        print(\"Orbiting motion done\")\n    def execute(self, context):",
+        "detail": "Pose2Sim_Blender.cameras",
+        "documentation": {}
+    },
+    {
+        "label": "ShowMessageBox",
+        "kind": 2,
+        "importPath": "Pose2Sim_Blender.common",
+        "description": "Pose2Sim_Blender.common",
+        "peekOfCode": "def ShowMessageBox(message = \"\", title = \"Message Box\", icon = 'INFO'):\n    '''\n    Popup message box.\n    See https://blender.stackexchange.com/a/110112/174689\n    '''\n    def draw(self, context):\n        self.layout.label(text=message)\n    bpy.context.window_manager.popup_menu(draw, title = title, icon = icon)\ndef createMaterial(color=(0.8, 0.8, 0.8, 1), metallic = 0.5, roughness = 0.5):\n    '''",
+        "detail": "Pose2Sim_Blender.common",
+        "documentation": {}
+    },
+    {
+        "label": "createMaterial",
+        "kind": 2,
+        "importPath": "Pose2Sim_Blender.common",
+        "description": "Pose2Sim_Blender.common",
+        "peekOfCode": "def createMaterial(color=(0.8, 0.8, 0.8, 1), metallic = 0.5, roughness = 0.5):\n    '''\n    Create a material\n    '''\n    color_count = [m.name for m in bpy.data.materials].count(str(color))\n    if color_count > 0:\n        color_index = [m.name for m in bpy.data.materials].index(str(color))\n        matg = bpy.data.materials[color_index]\n    else:\n        matg = bpy.data.materials.new(str(color))",
+        "detail": "Pose2Sim_Blender.common",
+        "documentation": {}
+    },
+    {
+        "label": "__author__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.common",
+        "description": "Pose2Sim_Blender.common",
+        "peekOfCode": "__author__ = \"David Pagnon\"\n__copyright__ = \"Copyright 2023, Pose2Sim_Blender\"\n__credits__ = [\"David Pagnon\"]\n__license__ = \"MIT License\"\n__version__ = \"0.7.0\"\n__maintainer__ = \"David Pagnon\"\n__email__ = \"contact@david-pagnon.com\"\n__status__ = \"Development\"\n## FUNCTIONS\ndef ShowMessageBox(message = \"\", title = \"Message Box\", icon = 'INFO'):",
+        "detail": "Pose2Sim_Blender.common",
+        "documentation": {}
+    },
+    {
+        "label": "__copyright__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.common",
+        "description": "Pose2Sim_Blender.common",
+        "peekOfCode": "__copyright__ = \"Copyright 2023, Pose2Sim_Blender\"\n__credits__ = [\"David Pagnon\"]\n__license__ = \"MIT License\"\n__version__ = \"0.7.0\"\n__maintainer__ = \"David Pagnon\"\n__email__ = \"contact@david-pagnon.com\"\n__status__ = \"Development\"\n## FUNCTIONS\ndef ShowMessageBox(message = \"\", title = \"Message Box\", icon = 'INFO'):\n    '''",
+        "detail": "Pose2Sim_Blender.common",
+        "documentation": {}
+    },
+    {
+        "label": "__credits__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.common",
+        "description": "Pose2Sim_Blender.common",
+        "peekOfCode": "__credits__ = [\"David Pagnon\"]\n__license__ = \"MIT License\"\n__version__ = \"0.7.0\"\n__maintainer__ = \"David Pagnon\"\n__email__ = \"contact@david-pagnon.com\"\n__status__ = \"Development\"\n## FUNCTIONS\ndef ShowMessageBox(message = \"\", title = \"Message Box\", icon = 'INFO'):\n    '''\n    Popup message box.",
+        "detail": "Pose2Sim_Blender.common",
+        "documentation": {}
+    },
+    {
+        "label": "__license__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.common",
+        "description": "Pose2Sim_Blender.common",
+        "peekOfCode": "__license__ = \"MIT License\"\n__version__ = \"0.7.0\"\n__maintainer__ = \"David Pagnon\"\n__email__ = \"contact@david-pagnon.com\"\n__status__ = \"Development\"\n## FUNCTIONS\ndef ShowMessageBox(message = \"\", title = \"Message Box\", icon = 'INFO'):\n    '''\n    Popup message box.\n    See https://blender.stackexchange.com/a/110112/174689",
+        "detail": "Pose2Sim_Blender.common",
+        "documentation": {}
+    },
+    {
+        "label": "__version__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.common",
+        "description": "Pose2Sim_Blender.common",
+        "peekOfCode": "__version__ = \"0.7.0\"\n__maintainer__ = \"David Pagnon\"\n__email__ = \"contact@david-pagnon.com\"\n__status__ = \"Development\"\n## FUNCTIONS\ndef ShowMessageBox(message = \"\", title = \"Message Box\", icon = 'INFO'):\n    '''\n    Popup message box.\n    See https://blender.stackexchange.com/a/110112/174689\n    '''",
+        "detail": "Pose2Sim_Blender.common",
+        "documentation": {}
+    },
+    {
+        "label": "__maintainer__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.common",
+        "description": "Pose2Sim_Blender.common",
+        "peekOfCode": "__maintainer__ = \"David Pagnon\"\n__email__ = \"contact@david-pagnon.com\"\n__status__ = \"Development\"\n## FUNCTIONS\ndef ShowMessageBox(message = \"\", title = \"Message Box\", icon = 'INFO'):\n    '''\n    Popup message box.\n    See https://blender.stackexchange.com/a/110112/174689\n    '''\n    def draw(self, context):",
+        "detail": "Pose2Sim_Blender.common",
+        "documentation": {}
+    },
+    {
+        "label": "__email__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.common",
+        "description": "Pose2Sim_Blender.common",
+        "peekOfCode": "__email__ = \"contact@david-pagnon.com\"\n__status__ = \"Development\"\n## FUNCTIONS\ndef ShowMessageBox(message = \"\", title = \"Message Box\", icon = 'INFO'):\n    '''\n    Popup message box.\n    See https://blender.stackexchange.com/a/110112/174689\n    '''\n    def draw(self, context):\n        self.layout.label(text=message)",
+        "detail": "Pose2Sim_Blender.common",
+        "documentation": {}
+    },
+    {
+        "label": "__status__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.common",
+        "description": "Pose2Sim_Blender.common",
+        "peekOfCode": "__status__ = \"Development\"\n## FUNCTIONS\ndef ShowMessageBox(message = \"\", title = \"Message Box\", icon = 'INFO'):\n    '''\n    Popup message box.\n    See https://blender.stackexchange.com/a/110112/174689\n    '''\n    def draw(self, context):\n        self.layout.label(text=message)\n    bpy.context.window_manager.popup_menu(draw, title = title, icon = icon)",
+        "detail": "Pose2Sim_Blender.common",
+        "documentation": {}
+    },
+    {
+        "label": "load_grf",
+        "kind": 2,
+        "importPath": "Pose2Sim_Blender.forces",
+        "description": "Pose2Sim_Blender.forces",
+        "peekOfCode": "def load_grf(grf_path):\n    '''\n    Retrieve data and header from .mot force file\n    INPUT: \n    - grf_path: path to the force .mot file\n    OUTPUT:\n    - grf_data_np: 2D numpy array with forces at each time step\n    - grf_header: time and force names (v: 3*value, p: 3*position, m: 3*moment)\n    '''\n    # read data",
+        "detail": "Pose2Sim_Blender.forces",
+        "documentation": {}
+    },
+    {
+        "label": "addForce",
+        "kind": 2,
+        "importPath": "Pose2Sim_Blender.forces",
+        "description": "Pose2Sim_Blender.forces",
+        "peekOfCode": "def addForce(force_collection, forceName='', text=\"FORCE\", color=COLOR):        \n    '''\n    Add one force vector to the scene\n    INPUTS:\n    - force_collection: collection to add the force to\n    - text: force name (default: \"MARKER\")\n    - color: marker color (default: COLOR)\n    OUTPUTS:\n    - Created new force\n    '''",
+        "detail": "Pose2Sim_Blender.forces",
+        "documentation": {}
+    },
+    {
+        "label": "import_forces",
+        "kind": 2,
+        "importPath": "Pose2Sim_Blender.forces",
+        "description": "Pose2Sim_Blender.forces",
+        "peekOfCode": "def import_forces(grf_path, direction='zup', target_framerate=30):\n    '''\n    Import a .mot force file into Blender.\n    OpenSim API is not required.\n    INPUTS: \n    - grf_path: path to a .mot force file\n    - direction: 'zup' or 'yup' (default: 'zu\n    OUTPUTS:\n    - Animated forces\n    '''",
+        "detail": "Pose2Sim_Blender.forces",
+        "documentation": {}
+    },
+    {
+        "label": "direction",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.forces",
+        "description": "Pose2Sim_Blender.forces",
+        "peekOfCode": "direction = 'zup'\nSIZE = 1/1000\nCOLOR =  (0, 1, 0, 0.8)\nrootpath=os.path.dirname(os.path.abspath(__file__))\narrowFile=os.path.join(rootpath,'Geometry','arrow.stl')\n## AUTHORSHIP INFORMATION\n__author__ = \"David Pagnon, Jonathan Camargo\"\n__copyright__ = \"Copyright 2023, BlendOSim & Pose2Sim_Blender\"\n__credits__ = [\"David Pagnon\", \"Jonathan Camargo\"]\n__license__ = \"MIT License\"",
+        "detail": "Pose2Sim_Blender.forces",
+        "documentation": {}
+    },
+    {
+        "label": "SIZE",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.forces",
+        "description": "Pose2Sim_Blender.forces",
+        "peekOfCode": "SIZE = 1/1000\nCOLOR =  (0, 1, 0, 0.8)\nrootpath=os.path.dirname(os.path.abspath(__file__))\narrowFile=os.path.join(rootpath,'Geometry','arrow.stl')\n## AUTHORSHIP INFORMATION\n__author__ = \"David Pagnon, Jonathan Camargo\"\n__copyright__ = \"Copyright 2023, BlendOSim & Pose2Sim_Blender\"\n__credits__ = [\"David Pagnon\", \"Jonathan Camargo\"]\n__license__ = \"MIT License\"\n__version__ = \"0.7.0\"",
+        "detail": "Pose2Sim_Blender.forces",
+        "documentation": {}
+    },
+    {
+        "label": "COLOR",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.forces",
+        "description": "Pose2Sim_Blender.forces",
+        "peekOfCode": "COLOR =  (0, 1, 0, 0.8)\nrootpath=os.path.dirname(os.path.abspath(__file__))\narrowFile=os.path.join(rootpath,'Geometry','arrow.stl')\n## AUTHORSHIP INFORMATION\n__author__ = \"David Pagnon, Jonathan Camargo\"\n__copyright__ = \"Copyright 2023, BlendOSim & Pose2Sim_Blender\"\n__credits__ = [\"David Pagnon\", \"Jonathan Camargo\"]\n__license__ = \"MIT License\"\n__version__ = \"0.7.0\"\n__maintainer__ = \"David Pagnon\"",
+        "detail": "Pose2Sim_Blender.forces",
+        "documentation": {}
+    },
+    {
+        "label": "__author__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.forces",
+        "description": "Pose2Sim_Blender.forces",
+        "peekOfCode": "__author__ = \"David Pagnon, Jonathan Camargo\"\n__copyright__ = \"Copyright 2023, BlendOSim & Pose2Sim_Blender\"\n__credits__ = [\"David Pagnon\", \"Jonathan Camargo\"]\n__license__ = \"MIT License\"\n__version__ = \"0.7.0\"\n__maintainer__ = \"David Pagnon\"\n__email__ = \"contact@david-pagnon.com\"\n__status__ = \"Development\"\n## FUNCTIONS\ndef load_grf(grf_path):",
+        "detail": "Pose2Sim_Blender.forces",
+        "documentation": {}
+    },
+    {
+        "label": "__copyright__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.forces",
+        "description": "Pose2Sim_Blender.forces",
+        "peekOfCode": "__copyright__ = \"Copyright 2023, BlendOSim & Pose2Sim_Blender\"\n__credits__ = [\"David Pagnon\", \"Jonathan Camargo\"]\n__license__ = \"MIT License\"\n__version__ = \"0.7.0\"\n__maintainer__ = \"David Pagnon\"\n__email__ = \"contact@david-pagnon.com\"\n__status__ = \"Development\"\n## FUNCTIONS\ndef load_grf(grf_path):\n    '''",
+        "detail": "Pose2Sim_Blender.forces",
+        "documentation": {}
+    },
+    {
+        "label": "__credits__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.forces",
+        "description": "Pose2Sim_Blender.forces",
+        "peekOfCode": "__credits__ = [\"David Pagnon\", \"Jonathan Camargo\"]\n__license__ = \"MIT License\"\n__version__ = \"0.7.0\"\n__maintainer__ = \"David Pagnon\"\n__email__ = \"contact@david-pagnon.com\"\n__status__ = \"Development\"\n## FUNCTIONS\ndef load_grf(grf_path):\n    '''\n    Retrieve data and header from .mot force file",
+        "detail": "Pose2Sim_Blender.forces",
+        "documentation": {}
+    },
+    {
+        "label": "__license__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.forces",
+        "description": "Pose2Sim_Blender.forces",
+        "peekOfCode": "__license__ = \"MIT License\"\n__version__ = \"0.7.0\"\n__maintainer__ = \"David Pagnon\"\n__email__ = \"contact@david-pagnon.com\"\n__status__ = \"Development\"\n## FUNCTIONS\ndef load_grf(grf_path):\n    '''\n    Retrieve data and header from .mot force file\n    INPUT: ",
+        "detail": "Pose2Sim_Blender.forces",
+        "documentation": {}
+    },
+    {
+        "label": "__version__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.forces",
+        "description": "Pose2Sim_Blender.forces",
+        "peekOfCode": "__version__ = \"0.7.0\"\n__maintainer__ = \"David Pagnon\"\n__email__ = \"contact@david-pagnon.com\"\n__status__ = \"Development\"\n## FUNCTIONS\ndef load_grf(grf_path):\n    '''\n    Retrieve data and header from .mot force file\n    INPUT: \n    - grf_path: path to the force .mot file",
+        "detail": "Pose2Sim_Blender.forces",
+        "documentation": {}
+    },
+    {
+        "label": "__maintainer__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.forces",
+        "description": "Pose2Sim_Blender.forces",
+        "peekOfCode": "__maintainer__ = \"David Pagnon\"\n__email__ = \"contact@david-pagnon.com\"\n__status__ = \"Development\"\n## FUNCTIONS\ndef load_grf(grf_path):\n    '''\n    Retrieve data and header from .mot force file\n    INPUT: \n    - grf_path: path to the force .mot file\n    OUTPUT:",
+        "detail": "Pose2Sim_Blender.forces",
+        "documentation": {}
+    },
+    {
+        "label": "__email__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.forces",
+        "description": "Pose2Sim_Blender.forces",
+        "peekOfCode": "__email__ = \"contact@david-pagnon.com\"\n__status__ = \"Development\"\n## FUNCTIONS\ndef load_grf(grf_path):\n    '''\n    Retrieve data and header from .mot force file\n    INPUT: \n    - grf_path: path to the force .mot file\n    OUTPUT:\n    - grf_data_np: 2D numpy array with forces at each time step",
+        "detail": "Pose2Sim_Blender.forces",
+        "documentation": {}
+    },
+    {
+        "label": "__status__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.forces",
+        "description": "Pose2Sim_Blender.forces",
+        "peekOfCode": "__status__ = \"Development\"\n## FUNCTIONS\ndef load_grf(grf_path):\n    '''\n    Retrieve data and header from .mot force file\n    INPUT: \n    - grf_path: path to the force .mot file\n    OUTPUT:\n    - grf_data_np: 2D numpy array with forces at each time step\n    - grf_header: time and force names (v: 3*value, p: 3*position, m: 3*moment)",
+        "detail": "Pose2Sim_Blender.forces",
+        "documentation": {}
+    },
+    {
+        "label": "load_trc",
+        "kind": 2,
+        "importPath": "Pose2Sim_Blender.markers",
+        "description": "Pose2Sim_Blender.markers",
+        "peekOfCode": "def load_trc(trc_path):\n    '''\n    Retrieve data and marker names from trc\n    INPUT: \n    - trc_path: path to the .trc file\n    OUTPUT:\n    - trc_data_np: 2D numpy array with marker coordinates at each time step\n    - markerNames: list of marker names\n    '''\n    # read data",
+        "detail": "Pose2Sim_Blender.markers",
+        "documentation": {}
+    },
+    {
+        "label": "addMarker",
+        "kind": 2,
+        "importPath": "Pose2Sim_Blender.markers",
+        "description": "Pose2Sim_Blender.markers",
+        "peekOfCode": "def addMarker(marker_collection, position=(0,0,0), text=\"MARKER\", material=bpy.types.Material):\n    '''\n    Add one marker to the scene\n    INPUTS:\n    - marker_collection: collection to add the marker to\n    - position: marker position (default: (0,0,0))\n    - text: marker name (default: \"MARKER\")\n    - color: marker color (default: COLOR)\n    OUTPUTS:\n    - Created new marker",
+        "detail": "Pose2Sim_Blender.markers",
+        "documentation": {}
+    },
+    {
+        "label": "import_trc",
+        "kind": 2,
+        "importPath": "Pose2Sim_Blender.markers",
+        "description": "Pose2Sim_Blender.markers",
+        "peekOfCode": "def import_trc(trc_path, direction='zup', target_framerate=30):\n    '''\n    Import a .trc marker file into Blender.\n    OpenSim API is not required.\n    INPUTS: \n    - trc_path: path to a .trc marker file\n    - direction: 'zup' or 'yup' (default: 'zup')\n    OUTPUTS:\n    - Animated markers\n    '''",
+        "detail": "Pose2Sim_Blender.markers",
+        "documentation": {}
+    },
+    {
+        "label": "direction",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.markers",
+        "description": "Pose2Sim_Blender.markers",
+        "peekOfCode": "direction = 'zup'\nRADIUS = 20/1000 # 12\nCOLOR =  (0, 1, 0, 0.8)\n## AUTHORSHIP INFORMATION\n__author__ = \"David Pagnon, Jonathan Camargo\"\n__copyright__ = \"Copyright 2023, BlendOSim & Pose2Sim_Blender\"\n__credits__ = [\"David Pagnon\", \"Jonathan Camargo\"]\n__license__ = \"MIT License\"\n__version__ = \"0.7.0\"\n__maintainer__ = \"David Pagnon\"",
+        "detail": "Pose2Sim_Blender.markers",
+        "documentation": {}
+    },
+    {
+        "label": "RADIUS",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.markers",
+        "description": "Pose2Sim_Blender.markers",
+        "peekOfCode": "RADIUS = 20/1000 # 12\nCOLOR =  (0, 1, 0, 0.8)\n## AUTHORSHIP INFORMATION\n__author__ = \"David Pagnon, Jonathan Camargo\"\n__copyright__ = \"Copyright 2023, BlendOSim & Pose2Sim_Blender\"\n__credits__ = [\"David Pagnon\", \"Jonathan Camargo\"]\n__license__ = \"MIT License\"\n__version__ = \"0.7.0\"\n__maintainer__ = \"David Pagnon\"\n__email__ = \"contact@david-pagnon.com\"",
+        "detail": "Pose2Sim_Blender.markers",
+        "documentation": {}
+    },
+    {
+        "label": "COLOR",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.markers",
+        "description": "Pose2Sim_Blender.markers",
+        "peekOfCode": "COLOR =  (0, 1, 0, 0.8)\n## AUTHORSHIP INFORMATION\n__author__ = \"David Pagnon, Jonathan Camargo\"\n__copyright__ = \"Copyright 2023, BlendOSim & Pose2Sim_Blender\"\n__credits__ = [\"David Pagnon\", \"Jonathan Camargo\"]\n__license__ = \"MIT License\"\n__version__ = \"0.7.0\"\n__maintainer__ = \"David Pagnon\"\n__email__ = \"contact@david-pagnon.com\"\n__status__ = \"Development\"",
+        "detail": "Pose2Sim_Blender.markers",
+        "documentation": {}
+    },
+    {
+        "label": "__author__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.markers",
+        "description": "Pose2Sim_Blender.markers",
+        "peekOfCode": "__author__ = \"David Pagnon, Jonathan Camargo\"\n__copyright__ = \"Copyright 2023, BlendOSim & Pose2Sim_Blender\"\n__credits__ = [\"David Pagnon\", \"Jonathan Camargo\"]\n__license__ = \"MIT License\"\n__version__ = \"0.7.0\"\n__maintainer__ = \"David Pagnon\"\n__email__ = \"contact@david-pagnon.com\"\n__status__ = \"Development\"\n## FUNCTIONS\ndef load_trc(trc_path):",
+        "detail": "Pose2Sim_Blender.markers",
+        "documentation": {}
+    },
+    {
+        "label": "__copyright__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.markers",
+        "description": "Pose2Sim_Blender.markers",
+        "peekOfCode": "__copyright__ = \"Copyright 2023, BlendOSim & Pose2Sim_Blender\"\n__credits__ = [\"David Pagnon\", \"Jonathan Camargo\"]\n__license__ = \"MIT License\"\n__version__ = \"0.7.0\"\n__maintainer__ = \"David Pagnon\"\n__email__ = \"contact@david-pagnon.com\"\n__status__ = \"Development\"\n## FUNCTIONS\ndef load_trc(trc_path):\n    '''",
+        "detail": "Pose2Sim_Blender.markers",
+        "documentation": {}
+    },
+    {
+        "label": "__credits__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.markers",
+        "description": "Pose2Sim_Blender.markers",
+        "peekOfCode": "__credits__ = [\"David Pagnon\", \"Jonathan Camargo\"]\n__license__ = \"MIT License\"\n__version__ = \"0.7.0\"\n__maintainer__ = \"David Pagnon\"\n__email__ = \"contact@david-pagnon.com\"\n__status__ = \"Development\"\n## FUNCTIONS\ndef load_trc(trc_path):\n    '''\n    Retrieve data and marker names from trc",
+        "detail": "Pose2Sim_Blender.markers",
+        "documentation": {}
+    },
+    {
+        "label": "__license__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.markers",
+        "description": "Pose2Sim_Blender.markers",
+        "peekOfCode": "__license__ = \"MIT License\"\n__version__ = \"0.7.0\"\n__maintainer__ = \"David Pagnon\"\n__email__ = \"contact@david-pagnon.com\"\n__status__ = \"Development\"\n## FUNCTIONS\ndef load_trc(trc_path):\n    '''\n    Retrieve data and marker names from trc\n    INPUT: ",
+        "detail": "Pose2Sim_Blender.markers",
+        "documentation": {}
+    },
+    {
+        "label": "__version__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.markers",
+        "description": "Pose2Sim_Blender.markers",
+        "peekOfCode": "__version__ = \"0.7.0\"\n__maintainer__ = \"David Pagnon\"\n__email__ = \"contact@david-pagnon.com\"\n__status__ = \"Development\"\n## FUNCTIONS\ndef load_trc(trc_path):\n    '''\n    Retrieve data and marker names from trc\n    INPUT: \n    - trc_path: path to the .trc file",
+        "detail": "Pose2Sim_Blender.markers",
+        "documentation": {}
+    },
+    {
+        "label": "__maintainer__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.markers",
+        "description": "Pose2Sim_Blender.markers",
+        "peekOfCode": "__maintainer__ = \"David Pagnon\"\n__email__ = \"contact@david-pagnon.com\"\n__status__ = \"Development\"\n## FUNCTIONS\ndef load_trc(trc_path):\n    '''\n    Retrieve data and marker names from trc\n    INPUT: \n    - trc_path: path to the .trc file\n    OUTPUT:",
+        "detail": "Pose2Sim_Blender.markers",
+        "documentation": {}
+    },
+    {
+        "label": "__email__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.markers",
+        "description": "Pose2Sim_Blender.markers",
+        "peekOfCode": "__email__ = \"contact@david-pagnon.com\"\n__status__ = \"Development\"\n## FUNCTIONS\ndef load_trc(trc_path):\n    '''\n    Retrieve data and marker names from trc\n    INPUT: \n    - trc_path: path to the .trc file\n    OUTPUT:\n    - trc_data_np: 2D numpy array with marker coordinates at each time step",
+        "detail": "Pose2Sim_Blender.markers",
+        "documentation": {}
+    },
+    {
+        "label": "__status__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.markers",
+        "description": "Pose2Sim_Blender.markers",
+        "peekOfCode": "__status__ = \"Development\"\n## FUNCTIONS\ndef load_trc(trc_path):\n    '''\n    Retrieve data and marker names from trc\n    INPUT: \n    - trc_path: path to the .trc file\n    OUTPUT:\n    - trc_data_np: 2D numpy array with marker coordinates at each time step\n    - markerNames: list of marker names",
+        "detail": "Pose2Sim_Blender.markers",
+        "documentation": {}
+    },
+    {
+        "label": "vtp2stl",
+        "kind": 2,
+        "importPath": "Pose2Sim_Blender.model",
+        "description": "Pose2Sim_Blender.model",
+        "peekOfCode": "def vtp2stl(vtp_path):\n    '''\n    Convert a .vtp file to .stl\n    Save it under the same name in the same folder\n    OpenSim .vtp file needs vtkXMLPolyDataReader\n    Other vtp formats may need vtkGenericDataObjectReader\n    INPUT:\n    - vtp_path: path to the .vtp file\n    OUTPUT:\n    - .stl file: same name, same folder",
+        "detail": "Pose2Sim_Blender.model",
+        "documentation": {}
+    },
+    {
+        "label": "import_model",
+        "kind": 2,
+        "importPath": "Pose2Sim_Blender.model",
+        "description": "Pose2Sim_Blender.model",
+        "peekOfCode": "def import_model(osim_path, modelRoot='',stlRoot='.',collection='', color = COLOR):\n    '''osim_path\n    Reads an .osim model file, lists bodies and corresponding meshes\n    Searches the meshes (stl, ply, vtp) on the computer, \n    converts them to .stl if only defined as .vtp\n    Adds meshes and their parent bodies to the scene and scale them.\n    OpenSim API is not required.\n    INPUTS: \n    - osim_path: path to the .osim model file\n    - modelRoot, stlRoot: optional paths",
+        "detail": "Pose2Sim_Blender.model",
+        "documentation": {}
+    },
+    {
+        "label": "COLOR",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.model",
+        "description": "Pose2Sim_Blender.model",
+        "peekOfCode": "COLOR = (0.8, 0.8, 0.8, 1)\n## AUTHORSHIP INFORMATION\n__author__ = \"David Pagnon, Jonathan Camargo\"\n__copyright__ = \"Copyright 2023, BlendOSim & Pose2Sim_Blender\"\n__credits__ = [\"David Pagnon\", \"Jonathan Camargo\"]\n__license__ = \"MIT License\"\n__version__ = \"0.7.0\"\n__maintainer__ = \"David Pagnon\"\n__email__ = \"contact@david-pagnon.com\"\n__status__ = \"Development\"",
+        "detail": "Pose2Sim_Blender.model",
+        "documentation": {}
+    },
+    {
+        "label": "__author__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.model",
+        "description": "Pose2Sim_Blender.model",
+        "peekOfCode": "__author__ = \"David Pagnon, Jonathan Camargo\"\n__copyright__ = \"Copyright 2023, BlendOSim & Pose2Sim_Blender\"\n__credits__ = [\"David Pagnon\", \"Jonathan Camargo\"]\n__license__ = \"MIT License\"\n__version__ = \"0.7.0\"\n__maintainer__ = \"David Pagnon\"\n__email__ = \"contact@david-pagnon.com\"\n__status__ = \"Development\"\n## FUNCTIONS\ndef vtp2stl(vtp_path):",
+        "detail": "Pose2Sim_Blender.model",
+        "documentation": {}
+    },
+    {
+        "label": "__copyright__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.model",
+        "description": "Pose2Sim_Blender.model",
+        "peekOfCode": "__copyright__ = \"Copyright 2023, BlendOSim & Pose2Sim_Blender\"\n__credits__ = [\"David Pagnon\", \"Jonathan Camargo\"]\n__license__ = \"MIT License\"\n__version__ = \"0.7.0\"\n__maintainer__ = \"David Pagnon\"\n__email__ = \"contact@david-pagnon.com\"\n__status__ = \"Development\"\n## FUNCTIONS\ndef vtp2stl(vtp_path):\n    '''",
+        "detail": "Pose2Sim_Blender.model",
+        "documentation": {}
+    },
+    {
+        "label": "__credits__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.model",
+        "description": "Pose2Sim_Blender.model",
+        "peekOfCode": "__credits__ = [\"David Pagnon\", \"Jonathan Camargo\"]\n__license__ = \"MIT License\"\n__version__ = \"0.7.0\"\n__maintainer__ = \"David Pagnon\"\n__email__ = \"contact@david-pagnon.com\"\n__status__ = \"Development\"\n## FUNCTIONS\ndef vtp2stl(vtp_path):\n    '''\n    Convert a .vtp file to .stl",
+        "detail": "Pose2Sim_Blender.model",
+        "documentation": {}
+    },
+    {
+        "label": "__license__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.model",
+        "description": "Pose2Sim_Blender.model",
+        "peekOfCode": "__license__ = \"MIT License\"\n__version__ = \"0.7.0\"\n__maintainer__ = \"David Pagnon\"\n__email__ = \"contact@david-pagnon.com\"\n__status__ = \"Development\"\n## FUNCTIONS\ndef vtp2stl(vtp_path):\n    '''\n    Convert a .vtp file to .stl\n    Save it under the same name in the same folder",
+        "detail": "Pose2Sim_Blender.model",
+        "documentation": {}
+    },
+    {
+        "label": "__version__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.model",
+        "description": "Pose2Sim_Blender.model",
+        "peekOfCode": "__version__ = \"0.7.0\"\n__maintainer__ = \"David Pagnon\"\n__email__ = \"contact@david-pagnon.com\"\n__status__ = \"Development\"\n## FUNCTIONS\ndef vtp2stl(vtp_path):\n    '''\n    Convert a .vtp file to .stl\n    Save it under the same name in the same folder\n    OpenSim .vtp file needs vtkXMLPolyDataReader",
+        "detail": "Pose2Sim_Blender.model",
+        "documentation": {}
+    },
+    {
+        "label": "__maintainer__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.model",
+        "description": "Pose2Sim_Blender.model",
+        "peekOfCode": "__maintainer__ = \"David Pagnon\"\n__email__ = \"contact@david-pagnon.com\"\n__status__ = \"Development\"\n## FUNCTIONS\ndef vtp2stl(vtp_path):\n    '''\n    Convert a .vtp file to .stl\n    Save it under the same name in the same folder\n    OpenSim .vtp file needs vtkXMLPolyDataReader\n    Other vtp formats may need vtkGenericDataObjectReader",
+        "detail": "Pose2Sim_Blender.model",
+        "documentation": {}
+    },
+    {
+        "label": "__email__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.model",
+        "description": "Pose2Sim_Blender.model",
+        "peekOfCode": "__email__ = \"contact@david-pagnon.com\"\n__status__ = \"Development\"\n## FUNCTIONS\ndef vtp2stl(vtp_path):\n    '''\n    Convert a .vtp file to .stl\n    Save it under the same name in the same folder\n    OpenSim .vtp file needs vtkXMLPolyDataReader\n    Other vtp formats may need vtkGenericDataObjectReader\n    INPUT:",
+        "detail": "Pose2Sim_Blender.model",
+        "documentation": {}
+    },
+    {
+        "label": "__status__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.model",
+        "description": "Pose2Sim_Blender.model",
+        "peekOfCode": "__status__ = \"Development\"\n## FUNCTIONS\ndef vtp2stl(vtp_path):\n    '''\n    Convert a .vtp file to .stl\n    Save it under the same name in the same folder\n    OpenSim .vtp file needs vtkXMLPolyDataReader\n    Other vtp formats may need vtkGenericDataObjectReader\n    INPUT:\n    - vtp_path: path to the .vtp file",
+        "detail": "Pose2Sim_Blender.model",
+        "documentation": {}
+    },
+    {
+        "label": "apply_mot_to_model",
+        "kind": 2,
+        "importPath": "Pose2Sim_Blender.motion",
+        "description": "Pose2Sim_Blender.motion",
+        "peekOfCode": "def apply_mot_to_model(mot_path, osim_path, direction='zup', target_framerate=30):\n    '''\n    Computes the coordinates of each opensim bodies in the ground plane\n    from a .mot motion file (joint angles) and a .osim model file,\n    saves to a .csv file (body positions and orientations).\n    Animates a previously loaded .osim model.\n    Requires OpenSim API to be installed in Blender (see Readme.md).\n    Can also import the resulting csv file,\n    in which case OpenSim API is not required.\n    INPUTS: ",
+        "detail": "Pose2Sim_Blender.motion",
+        "documentation": {}
+    },
+    {
+        "label": "direction",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.motion",
+        "description": "Pose2Sim_Blender.motion",
+        "peekOfCode": "direction = 'zup'\nexport_to_csv = True\n## AUTHORSHIP INFORMATION\n__author__ = \"David Pagnon, Jonathan Camargo\"\n__copyright__ = \"Copyright 2023, BlendOSim & Pose2Sim_Blender\"\n__credits__ = [\"David Pagnon\", \"Jonathan Camargo\"]\n__license__ = \"MIT License\"\n__version__ = \"0.7.0\"\n__maintainer__ = \"David Pagnon\"\n__email__ = \"contact@david-pagnon.com\"",
+        "detail": "Pose2Sim_Blender.motion",
+        "documentation": {}
+    },
+    {
+        "label": "export_to_csv",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.motion",
+        "description": "Pose2Sim_Blender.motion",
+        "peekOfCode": "export_to_csv = True\n## AUTHORSHIP INFORMATION\n__author__ = \"David Pagnon, Jonathan Camargo\"\n__copyright__ = \"Copyright 2023, BlendOSim & Pose2Sim_Blender\"\n__credits__ = [\"David Pagnon\", \"Jonathan Camargo\"]\n__license__ = \"MIT License\"\n__version__ = \"0.7.0\"\n__maintainer__ = \"David Pagnon\"\n__email__ = \"contact@david-pagnon.com\"\n__status__ = \"Development\"",
+        "detail": "Pose2Sim_Blender.motion",
+        "documentation": {}
+    },
+    {
+        "label": "__author__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.motion",
+        "description": "Pose2Sim_Blender.motion",
+        "peekOfCode": "__author__ = \"David Pagnon, Jonathan Camargo\"\n__copyright__ = \"Copyright 2023, BlendOSim & Pose2Sim_Blender\"\n__credits__ = [\"David Pagnon\", \"Jonathan Camargo\"]\n__license__ = \"MIT License\"\n__version__ = \"0.7.0\"\n__maintainer__ = \"David Pagnon\"\n__email__ = \"contact@david-pagnon.com\"\n__status__ = \"Development\"\n## FUNCTIONS\ndef apply_mot_to_model(mot_path, osim_path, direction='zup', target_framerate=30):",
+        "detail": "Pose2Sim_Blender.motion",
+        "documentation": {}
+    },
+    {
+        "label": "__copyright__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.motion",
+        "description": "Pose2Sim_Blender.motion",
+        "peekOfCode": "__copyright__ = \"Copyright 2023, BlendOSim & Pose2Sim_Blender\"\n__credits__ = [\"David Pagnon\", \"Jonathan Camargo\"]\n__license__ = \"MIT License\"\n__version__ = \"0.7.0\"\n__maintainer__ = \"David Pagnon\"\n__email__ = \"contact@david-pagnon.com\"\n__status__ = \"Development\"\n## FUNCTIONS\ndef apply_mot_to_model(mot_path, osim_path, direction='zup', target_framerate=30):\n    '''",
+        "detail": "Pose2Sim_Blender.motion",
+        "documentation": {}
+    },
+    {
+        "label": "__credits__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.motion",
+        "description": "Pose2Sim_Blender.motion",
+        "peekOfCode": "__credits__ = [\"David Pagnon\", \"Jonathan Camargo\"]\n__license__ = \"MIT License\"\n__version__ = \"0.7.0\"\n__maintainer__ = \"David Pagnon\"\n__email__ = \"contact@david-pagnon.com\"\n__status__ = \"Development\"\n## FUNCTIONS\ndef apply_mot_to_model(mot_path, osim_path, direction='zup', target_framerate=30):\n    '''\n    Computes the coordinates of each opensim bodies in the ground plane",
+        "detail": "Pose2Sim_Blender.motion",
+        "documentation": {}
+    },
+    {
+        "label": "__license__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.motion",
+        "description": "Pose2Sim_Blender.motion",
+        "peekOfCode": "__license__ = \"MIT License\"\n__version__ = \"0.7.0\"\n__maintainer__ = \"David Pagnon\"\n__email__ = \"contact@david-pagnon.com\"\n__status__ = \"Development\"\n## FUNCTIONS\ndef apply_mot_to_model(mot_path, osim_path, direction='zup', target_framerate=30):\n    '''\n    Computes the coordinates of each opensim bodies in the ground plane\n    from a .mot motion file (joint angles) and a .osim model file,",
+        "detail": "Pose2Sim_Blender.motion",
+        "documentation": {}
+    },
+    {
+        "label": "__version__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.motion",
+        "description": "Pose2Sim_Blender.motion",
+        "peekOfCode": "__version__ = \"0.7.0\"\n__maintainer__ = \"David Pagnon\"\n__email__ = \"contact@david-pagnon.com\"\n__status__ = \"Development\"\n## FUNCTIONS\ndef apply_mot_to_model(mot_path, osim_path, direction='zup', target_framerate=30):\n    '''\n    Computes the coordinates of each opensim bodies in the ground plane\n    from a .mot motion file (joint angles) and a .osim model file,\n    saves to a .csv file (body positions and orientations).",
+        "detail": "Pose2Sim_Blender.motion",
+        "documentation": {}
+    },
+    {
+        "label": "__maintainer__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.motion",
+        "description": "Pose2Sim_Blender.motion",
+        "peekOfCode": "__maintainer__ = \"David Pagnon\"\n__email__ = \"contact@david-pagnon.com\"\n__status__ = \"Development\"\n## FUNCTIONS\ndef apply_mot_to_model(mot_path, osim_path, direction='zup', target_framerate=30):\n    '''\n    Computes the coordinates of each opensim bodies in the ground plane\n    from a .mot motion file (joint angles) and a .osim model file,\n    saves to a .csv file (body positions and orientations).\n    Animates a previously loaded .osim model.",
+        "detail": "Pose2Sim_Blender.motion",
+        "documentation": {}
+    },
+    {
+        "label": "__email__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.motion",
+        "description": "Pose2Sim_Blender.motion",
+        "peekOfCode": "__email__ = \"contact@david-pagnon.com\"\n__status__ = \"Development\"\n## FUNCTIONS\ndef apply_mot_to_model(mot_path, osim_path, direction='zup', target_framerate=30):\n    '''\n    Computes the coordinates of each opensim bodies in the ground plane\n    from a .mot motion file (joint angles) and a .osim model file,\n    saves to a .csv file (body positions and orientations).\n    Animates a previously loaded .osim model.\n    Requires OpenSim API to be installed in Blender (see Readme.md).",
+        "detail": "Pose2Sim_Blender.motion",
+        "documentation": {}
+    },
+    {
+        "label": "__status__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender.motion",
+        "description": "Pose2Sim_Blender.motion",
+        "peekOfCode": "__status__ = \"Development\"\n## FUNCTIONS\ndef apply_mot_to_model(mot_path, osim_path, direction='zup', target_framerate=30):\n    '''\n    Computes the coordinates of each opensim bodies in the ground plane\n    from a .mot motion file (joint angles) and a .osim model file,\n    saves to a .csv file (body positions and orientations).\n    Animates a previously loaded .osim model.\n    Requires OpenSim API to be installed in Blender (see Readme.md).\n    Can also import the resulting csv file,",
+        "detail": "Pose2Sim_Blender.motion",
+        "documentation": {}
+    },
+    {
+        "label": "__version__",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender._init_",
+        "description": "Pose2Sim_Blender._init_",
+        "peekOfCode": "__version__ = \"0.7.0\"\nVERSION = __version__",
+        "detail": "Pose2Sim_Blender._init_",
+        "documentation": {}
+    },
+    {
+        "label": "VERSION",
+        "kind": 5,
+        "importPath": "Pose2Sim_Blender._init_",
+        "description": "Pose2Sim_Blender._init_",
+        "peekOfCode": "VERSION = __version__",
+        "detail": "Pose2Sim_Blender._init_",
+        "documentation": {}
+    }
+]
